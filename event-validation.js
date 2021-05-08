@@ -5,6 +5,7 @@
 var type = require('component-type')
 var join = require('join-component')
 var assert = require('chai').assert
+var Buffer = require('buffer/').Buffer
 
 // PostHog messages can be a maximum of 32kb.
 var MAX_SIZE = 32 << 10

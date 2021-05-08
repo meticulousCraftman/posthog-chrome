@@ -36,9 +36,6 @@ const event = program.event
 const properties = program.properties
 const alias = program.alias
 
-console.log("API key - ", apiKey);
-console.log("Type - ", type);
-
 const run = (method, args) => {
   const posthog = new PostHog(apiKey, { host, flushAt: 1 })
   posthog[method](args, err => {

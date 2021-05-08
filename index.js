@@ -1,10 +1,14 @@
+'use strict'
+
 const removeSlash = require("remove-trailing-slash");
-const axios = require("axios");
-const axiosRetry = require("axios-retry");
 const ms = require("ms");
 const looselyValidate = require('./event-validation')
 const version = require("./package.json").version;
 const assert = require("chai").assert;
+var fetch = {};
+if (typeof window === "undefined") {
+    fetch = require("node-fetch");
+}
 
 
 const noop = () => { }
@@ -38,12 +42,6 @@ class PostHog {
             writable: false,
             enumerable: true,
             value: typeof options.enable === 'boolean' ? options.enable : true
-        })
-
-        axiosRetry(axios, {
-            retries: options.retryCount || 3,
-            retryCondition: this._isErrorRetryable,
-            retryDelay: axiosRetry.exponentialDelay
         })
 
     }
@@ -243,42 +241,26 @@ class PostHog {
             req.timeout = typeof this.timeout === 'string' ? ms(this.timeout) : this.timeout
         }
 
-        axios(req)
-            .then(() => done())
+        console.log("[PostHog] Sending request with axios - ", req);
+
+        fetch(req.url, {
+            method: "POST",
+            headers: req.headers,
+            body: JSON.stringify(req.data)
+        })
+            .then((response) => {
+                console.log("[PostHog] Response from server - ", response.status);
+                done()
+            })
             .catch(err => {
                 if (err.response) {
                     const error = new Error(err.response.statusText)
                     return done(error)
                 }
-
+                console.log("[PostHog] Response from server - ", err)
                 done(err)
-            })
+            });
     }
-
-    _isErrorRetryable(error) {
-        // Retry Network Errors.
-        if (axiosRetry.isNetworkError(error)) {
-            return true
-        }
-
-        if (!error.response) {
-            // Cannot determine if the request can be retried
-            return false
-        }
-
-        // Retry Server Errors (5xx).
-        if (error.response.status >= 500 && error.response.status <= 599) {
-            return true
-        }
-
-        // Retry if rate limited.
-        if (error.response.status === 429) {
-            return true
-        }
-
-        return false
-    }
-
 
 }
 
