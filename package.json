@@ -1,0 +1,29 @@
+{
+  "name": "posthog-chrome",
+  "version": "1.0.0",
+  "description": "PostHog Chrome extension integration (Service workers)",
+  "license": "MIT",
+  "main": "index.js",
+  "repository": "PostHog/posthog-node",
+  "author": {
+    "name": "Apoorva Singh",
+    "email": "apoorva.singh157@gmail.com",
+    "url": "https://posthog.com"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "dependencies": {
+    "axios": "^0.21.1",
+    "axios-retry": "^3.1.9",
+    "chai": "^4.3.4",
+    "component-type": "^1.2.1",
+    "join-component": "^1.1.0",
+    "ms": "^2.1.3",
+    "remove-trailing-slash": "^0.1.1"
+  },
+  "devDependencies": {
+    "commander": "2.9.0"
+  }
+}
